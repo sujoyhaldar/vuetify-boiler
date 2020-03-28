@@ -1,0 +1,58 @@
+/**
+ * As our first step, we'll pull in the user's webpack.mix.js
+ * file. Based on what the user requests in that file,
+ * a generic config object will be constructed for us.
+ */
+let mix = require('node_modules/laravel-mix/src/index');
+
+let ComponentFactory = require('node_modules/laravel-mix/src/components/ComponentFactory');
+
+new ComponentFactory().installAll();
+
+require(Mix.paths.mix());
+
+module.exports = {
+  rules: [
+    {
+      test: /\.s(c|a)ss$/,
+      use: [
+        'vue-style-loader',
+        'css-loader',
+        {
+          loader: 'sass-loader',
+          // Requires sass-loader@^7.0.0
+          options: {
+            implementation: require('sass'),
+            fiber: require('fibers'),
+            indentedSyntax: true // optional
+          },
+          // Requires sass-loader@^8.0.0
+          options: {
+            implementation: require('sass'),
+            sassOptions: {
+              fiber: require('fibers'),
+              indentedSyntax: true // optional
+            },
+          },
+        },
+      ],
+    },
+  ],
+}
+
+/**
+ * Just in case the user needs to hook into this point
+ * in the build process, we'll make an announcement.
+ */
+
+Mix.dispatch('init', Mix);
+
+/**
+ * Now that we know which build tasks are required by the
+ * user, we can dynamically create a configuration object
+ * for Webpack. And that's all there is to it. Simple!
+ */
+
+let WebpackConfig = require('node_modules/laravel-mix/src/builder/WebpackConfig');
+
+module.exports = new WebpackConfig().build();
